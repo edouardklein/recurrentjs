@@ -1,5 +1,6 @@
 var R = {}; // the Recurrent library
-
+Math.tanh = require('es5-ext/math/tanh');
+Math.log2 = require('es5-ext/math/log2');
 (function(global) {
   "use strict";
 
@@ -524,5 +525,7 @@ var R = {}; // the Recurrent library
   // optimization
   global.Solver = Solver;
   global.Graph = Graph;
-  
+
 })(R);
+
+module.exports = R;
