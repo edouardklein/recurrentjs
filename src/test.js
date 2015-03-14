@@ -7,7 +7,7 @@ var max_chars_gen = 100; // max length of generated sentences
 
 // model parameters
 generator = 'lstm'; // can be 'rnn' or 'lstm'
-hidden_sizes = [20,20]; // list of sizes of hidden layers
+hidden_sizes = [10]; // list of sizes of hidden layers
 letter_size = 5; // size of letter embeddings
 
 // optimization
@@ -29,7 +29,7 @@ var solver = new R.Solver(); // should be class because it needs memory for step
 
 var model = {};
 
-var inputData = fs.readFileSync('./test_data.txt', 'utf8');
+var inputData = fs.readFileSync('./pratchett10.txt', 'utf8');
 
 var initVocab = function(sents, count_threshold) {
   // go over all characters and keep track of all unique ones seen
@@ -135,7 +135,7 @@ var saveModel = function() {
   out['letterToIndex'] = letterToIndex;
   out['indexToLetter'] = indexToLetter;
   out['vocab'] = vocab;
-  $("#tio").val(JSON.stringify(out));
+  console.log(JSON.stringify(out));
 }
 
 var loadModel = function(j) {
@@ -171,12 +171,13 @@ var forwardIndex = function(G, model, ix, prev) {
   return out_struct;
 }
 
-var predictSentence = function(model, samplei, temperature) {
+var predictSentence = function(model, samplei, temperature, primer) {
   if(typeof samplei === 'undefined') { samplei = false; }
   if(typeof temperature === 'undefined') { temperature = 1.0; }
+  if(typeof primer === 'undefined'){ primer = ''}
 
   var G = new R.Graph(false);
-  var s = '';
+  var s = primer;
   var prev = {};
   while(true) {
 
@@ -254,11 +255,11 @@ function median(values) {
 
 var ppl_list = [];
 var tick_iter = 0;
-var tick = function() {
+var tick = function(sent) {
 
   // sample sentence fromd data
-  var sentix = R.randi(0,data_sents.length);
-  var sent = data_sents[sentix];
+  //var sentix = R.randi(0,data_sents.length);
+  //var sent = data_sents[sentix];
 
   var t0 = +new Date();  // log start timestamp
 
@@ -278,17 +279,17 @@ var tick = function() {
 
   // evaluate now and then
   tick_iter += 1;
-  if(tick_iter % 50 === 0) {
+  //if(tick_iter % 50 === 0) {
      // draw samples
   // $('#samples').html('');
   //   for(var q=0;q<5;q++) {
-        var pred = predictSentence(model, true, sample_softmax_temperature);
-        console.log(pred);
-        console.log(tick_time)
+  //      var pred = predictSentence(model, true, sample_softmax_temperature);
+  //      console.log(pred);
+  //      console.log(tick_time)
   //     var pred_div = '<div class="apred">'+pred+'</div>'
   //     $('#samples').append(pred_div);
   //   }
-   }
+  // }
   // if(tick_iter % 10 === 0) {
   //   // draw argmax prediction
   //   $('#argmax').html('');
@@ -308,6 +309,12 @@ var tick = function() {
   //     pplGraph.drawSelf(document.getElementById("pplgraph"));
   //   }
   //}
+  // evaluate cost function on a never seen before sentence
+  var cost_struct_on_unknown = costfun(model, "Most armies are in fact run by their sergeants.");
+  return {'ppl':cost_struct.ppl, 'cost':cost_struct.cost,
+          'ppl_on_unknown':cost_struct_on_unknown.ppl,
+          'cost_on_unknown':cost_struct_on_unknown.cost,
+          'time':tick_time};
 }
 
 var gradCheck = function() {
@@ -340,9 +347,46 @@ var gradCheck = function() {
   }
 }
 
+// from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex ;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
 reinit()
-for(var i=0;i<500;i++) {
-tick()
+var max_epochs=40;
+for(var i=0;i<max_epochs;i++) {
+  shuffle(data_sents);
+  for(var j=0;j<data_sents.length;j++){
+      metrics = tick(data_sents[j]);
+      var sentence_soft_no_primer = predictSentence(model, true, sample_softmax_temperature);
+      var sentence_soft_primer = predictSentence(model, true, sample_softmax_temperature, "Imagination ");
+      var sentence_argmax_no_primer = predictSentence(model, false);
+      var sentence_argmax_primer = predictSentence(model, false, '', "Imagination ");
+      console.log('Epoch '+i+' sentence '+j)
+      console.log(metrics)
+      console.log(sentence_soft_no_primer)
+      console.log(sentence_soft_primer)
+      console.log(sentence_argmax_no_primer)
+      console.log(sentence_argmax_primer)
+      console.log('metrics:'+[i, j, metrics.ppl, metrics.ppl_on_unknown, metrics.cost, metrics.cost_on_unknown].join(','))
+      console.log('')
+
+  }
 }
 //repl;
 //var iid = null;
