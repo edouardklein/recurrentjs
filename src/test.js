@@ -7,7 +7,7 @@ var max_chars_gen = 100; // max length of generated sentences
 
 // model parameters
 generator = 'lstm'; // can be 'rnn' or 'lstm'
-hidden_sizes = [10]; // list of sizes of hidden layers
+hidden_sizes = [+(process.argv[2])]; // list of sizes of hidden layers
 letter_size = 5; // size of letter embeddings
 
 // optimization
@@ -29,11 +29,10 @@ var solver = new R.Solver(); // should be class because it needs memory for step
 
 var model = {};
 
-var inputData = fs.readFileSync('./pratchett10.txt', 'utf8');
+//var inputData = fs.readFileSync('./pratchett10.txt', 'utf8');
 
-var initVocab = function(sents, count_threshold) {
+var initVocab = function(txt, count_threshold) {
   // go over all characters and keep track of all unique ones seen
-  var txt = sents.join(''); // concat all
 
   // count up all characters
   var d = {};
@@ -66,7 +65,7 @@ var initVocab = function(sents, count_threshold) {
   // globals written: indexToLetter, letterToIndex, vocab (list), and:
   input_size = vocab.length + 1;
   output_size = vocab.length + 1;
-  epoch_size = sents.length;
+  //epoch_size = sents.length;
   console.log('found ' + vocab.length + ' distinct characters: ' + vocab.join(''));
 }
 
@@ -106,21 +105,12 @@ var reinit = function(opt) {
   ppl_list = [];
   tick_iter = 0;
 
-  // process the input, filter out blanks
-  var data_sents_raw = inputData.split('\n');
-  data_sents = [];
-  for(var i=0;i<data_sents_raw.length;i++) {
-    var sent = data_sents_raw[i].trim();
-    if(sent.length > 0) {
-      data_sents.push(sent);
-    }
-  }
 
-  initVocab(data_sents, 1); // takes count threshold for characters
+  initVocab('c•z½a►tdHJb[Ls%SDér7}V84G&.(“jZlX—{EW])kg=”ö:/3\'"ÎO!v’5–KioRQnMF;9\n+UwhmBâ 2u…-Y6TCA0x1?Pq$peIyNf,', 1); // takes count threshold for characters
   model = initModel();
 }
 
-var saveModel = function() {
+var saveModel = function(filename) {
   var out = {};
   out['hidden_sizes'] = hidden_sizes;
   out['generator'] = generator;
@@ -135,7 +125,7 @@ var saveModel = function() {
   out['letterToIndex'] = letterToIndex;
   out['indexToLetter'] = indexToLetter;
   out['vocab'] = vocab;
-  console.log(JSON.stringify(out));
+  fs.writeFileSync(filename,JSON.stringify(out));
 }
 
 var loadModel = function(j) {
@@ -346,46 +336,27 @@ var gradCheck = function() {
     }
   }
 }
-
-// from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex ;
-
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
+var execSync = require('exec-sync');
 
 reinit()
-var max_epochs=40;
-for(var i=0;i<max_epochs;i++) {
-  shuffle(data_sents);
-  for(var j=0;j<data_sents.length;j++){
-      metrics = tick(data_sents[j]);
-      var sentence_soft_no_primer = predictSentence(model, true, sample_softmax_temperature);
-      var sentence_soft_primer = predictSentence(model, true, sample_softmax_temperature, "Imagination ");
-      var sentence_argmax_no_primer = predictSentence(model, false);
-      var sentence_argmax_primer = predictSentence(model, false, '', "Imagination ");
-      console.log('Epoch '+i+' sentence '+j)
-      console.log(metrics)
-      console.log(sentence_soft_no_primer)
-      console.log(sentence_soft_primer)
-      console.log(sentence_argmax_no_primer)
-      console.log(sentence_argmax_primer)
-      console.log('metrics:'+[i, j, metrics.ppl, metrics.ppl_on_unknown, metrics.cost, metrics.cost_on_unknown].join(','))
-      console.log('')
-
+var max_ticks = 601;
+for(var j=0;j<max_ticks;j++){
+  var sentence = execSync('fortune '+process.argv[3]);
+  metrics = tick(sentence);
+  if(j%10==0){
+    var sentence_soft_no_primer = predictSentence(model, true, sample_softmax_temperature);
+    var sentence_soft_primer = predictSentence(model, true, sample_softmax_temperature, "Imagination ");
+    var sentence_argmax_no_primer = predictSentence(model, false);
+    var sentence_argmax_primer = predictSentence(model, false, '', "Imagination ");
+    console.log('Sentence '+j)
+    console.log(metrics)
+    console.log(sentence_soft_no_primer)
+    console.log(sentence_soft_primer)
+    console.log(sentence_argmax_no_primer)
+    console.log(sentence_argmax_primer)
+    console.log('metrics:'+[j, metrics.ppl, metrics.ppl_on_unknown, metrics.cost, metrics.cost_on_unknown].join(','))
+    console.log('')
+    saveModel(process.argv[3]+'_'+hidden_sizes[0]+'_'+j+'.json')
   }
 }
 //repl;

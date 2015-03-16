@@ -1,0 +1,100 @@
+The Singularity Is Near
+PROLOGUE
+The Power of Ideas
+I do not think there is any thrill that can go through the human heart like that felt by the inventor as he sees some creation of the brain unfolding to success.
+%
+—Nikola Tesla, 1896, Inventor of Alternating Current
+At the age of five, I had the idea that I would become an inventor.
+%
+ I had the notion that inventions could change the world.
+%
+ When other kids were wondering aloud what they wanted to be, I already had the conceit that I knew what I was going to be.
+%
+ The rocket ship to the moon that I was then building (almost a decade before President Kennedy's challenge to the nation) did not work out.
+%
+ But at around the time I turned eight, my inventions became a little more realistic, such as a robotic theater with mechanical linkages that could move scenery and characters in and out of view, and virtual baseball games.
+%
+Having fled the Holocaust, my parents, both artists, wanted a more worldly, less provincial, religious upbringing for me.
+%
+ My spiritual education, as a result, took place in a Unitarian church.
+%
+ We would spend six months studying one religion—going to its services, reading its books, having dialogues with its leaders—and then move on to the next.
+%
+ The theme was "many paths to the truth.
+%
+" I noticed, of course, many parallels among the world's religious traditions, but even the inconsistencies were illuminating.
+%
+ It became clear to me that the basic truths were profound enough to transcend apparent contradictions.
+%
+At the age of eight, I discovered the Tom Swift Jr.
+%
+ series of books.
+%
+ The plots of all of the thirty-three books (only nine of which had been published when I started to read them in 1956) were always the same: Tom would get himself into a terrible predicament, in which his fate and that of his friends, and often the rest of the human race, hung in the balance.
+%
+ Tom would retreat to his basement lab and think about how to solve the problem.
+%
+ This, then, was the dramatic tension in each book in the series: what ingenious idea would Tom and his friends come up with to save the day? The moral of these tales was simple: the right idea had the power to overcome a seemingly overwhelming challenge.
+%
+To this day, I remain convinced of this basic philosophy: no matter what quandaries we face—business problems, health issues, relationship difficulties, as well as the great scientific, social, and cultural challenges of our time—there is an idea that can enable us to prevail.
+%
+ Furthermore, we can find that idea.
+%
+ And when we find it, we need to implement it.
+%
+ My life has been shaped by this imperative.
+%
+ The power of an idea—this is itself an idea.
+%
+Around the same time that I was reading the Tom Swift Jr.
+%
+ series, I recall my grandfather, who had also fled Europe with my mother, coming back from his first return visit to Europe with two key memories.
+%
+ One was the gracious treatment he received from the Austrians and Germans, the same people who had forced him to flee in 1938.
+%
+ The other was a rare opportunity he had been given to touch with his own hands some original manuscripts of Leonardo da Vinci.
+%
+ Both recollections influenced me, but the latter is one I've returned to many times.
+%
+ He described the experience with reverence, as if he had touched the work of God himself.
+%
+ This, then, was the religion that I was raised with: veneration for human creativity and the power of ideas.
+%
+In 1960, at the age of twelve, I discovered the computer and became fascinated with its ability to model and re-create the world.
+%
+ I hung around the surplus electronics stores on Canal Street in Manhattan (they're still there!) and gathered parts to build my own computational devices.
+%
+ During the 1960s, I was as absorbed in the contemporary musical, cultural, and political movements as my peers, but I became equally engaged in a much more obscure trend: namely, the remarkable sequence of machines that IBM proffered during that decade, from their big "7000" series (7070, 7074, 7090, 7094) to their small 1620, effectively the first "minicomputer.
+%
+" The machines were introduced at yearly intervals, and each one was less expensive and more powerful than the last, a phenomenon familiar today.
+%
+ I got access to an IBM 1620 and began to write programs for statistical analysis and subsequently for music composition.
+%
+I still recall the time in 1968 when I was allowed into the secure, cavernous chamber housing what was then the most powerful computer in New England, a top-of-the-line IBM 360 Model 91, with a remarkable million bytes (one megabyte) of "core" memory, an impressive speed of one million instructions per second (one MIPS), and a rental cost of only one thousand dollars per hour.
+%
+ I had developed a computer program that matched high-school students to colleges, and I watched in fascination as the front-panel lights danced through a distinctive pattern as the machine processed each student's application.
+%
+3 Even though I was quite familiar with every line of code, it nonetheless seemed as if the computer were deep in thought when the lights dimmed for several seconds at the denouement of each such cycle.
+%
+ Indeed, it could do flawlessly in ten seconds what took us ten hours to do manually with far less accuracy.
+%
+As an inventor in the 1970s, I came to realize that my inventions needed to make sense in terms of the enabling technologies and market forces that would exist when the inventions were introduced, as that world would be a very different one from the one in which they were conceived.
+%
+ I began to develop models of how distinct technologies—electronics, communications, computer processors, memory, magnetic storage, and others—developed and how these changes rippled through markets and ultimately our social institutions.
+%
+ I realized that most inventions fail not because the R&D department can't get them to work but because the timing is wrong.
+%
+ Inventing is a lot like surfing: you have to anticipate and catch the wave at just the right moment.
+%
+My interest in technology trends and their implications took on a life of its own in the 1980s, and I began to use my models to project and anticipate future technologies, innovations that would appear in 2000, 2010, 2020, and beyond.
+%
+ This enabled me to invent with the capabilities of the future by conceiving and designing inventions using these future capabilities.
+%
+ In the mid-to-late 1980s, I wrote my first book, The Age of Intelligent Machines.
+%
+4 It included extensive (and reasonably accurate) predictions for the 1990s and 2000s, and ended with the specter of machine intelligence becoming indistinguishable from that of its human progenitors within the first half of the twenty-first century.
+%
+ It seemed like a poignant conclusion, and in any event I personally found it difficult to look beyond so transforming an outcome.
+%
+Over the last twenty years, I have come to appreciate an important meta-idea: that the power of ideas to transform the world is itself accelerating.
+%

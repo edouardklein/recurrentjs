@@ -126,3 +126,30 @@ Hand selected predicted sentences using these two criterion :
   - human assessed qualitative quality of output
 
 I suggest we start with isolated effects first.
+
+# TODO
+- Use fortune to get the sentences
+- Create appropriate fortune files
+  - small number of longer sentences
+  - huge number of long-ish sentences
+- Save the state and check the restore mechanism works.
+
+# Experiment 2
+
+The goal is to do away with the concept of epochs, just reading chunks from a file. If the file is huge, each chunk will probably be seen once or never, if it is small, each chunk will be seen multiple times. We keep training on sentences, but We increase the size of the dataset, and see when our small network gives up, if it does.
+
+# Questions
+
+Does a small network learn as well as a large one on sentences ? <-> Shall we increase the number of neurons as we increase the number of sentences (but not their size) ?
+
+Can we learn from a set so big, it's not probable a lot of sentences will be seen twice ?
+
+# Methods
+
+Created a fortune file to break up the book in pieces that can be fed to the network.
+
+Starting with the code from Exp1, make the save/restore mechanisms work.
+
+Set up an experiment that runs for a large number of ticks, reading one sentence at a time from the book.
+
+Set up the experiments on the server : run three different sizes of network on three different sizes of input, for the same number of ticks. Compare the perplexity graphs, compare the predicted sentences.
