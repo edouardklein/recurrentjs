@@ -106,7 +106,7 @@ var reinit = function(opt) {
   tick_iter = 0;
 
 
-  initVocab('c•z½a►tdHJb[Ls%SDér7}V84G&.(“jZlX—{EW])kg=”ö:/3\'"ÎO!v’5–KioRQnMF;9\n+UwhmBâ 2u…-Y6TCA0x1?Pq$peIyNf,', 1); // takes count threshold for characters
+  initVocab(',w}hV84zmBG 2u&.(-5aKjY6ZtiloRTX{EW]QdH)nCAkMgbxJ0F[=:/1?Pq3L$sp%\'S"O!D;9e\nr+vIU7yNfc', 1); // takes count threshold for characters
   model = initModel();
 }
 
@@ -339,11 +339,11 @@ var gradCheck = function() {
 var execSync = require('exec-sync');
 
 reinit()
-var max_ticks = 601;
+var max_ticks = 10001;
 for(var j=0;j<max_ticks;j++){
   var sentence = execSync('fortune '+process.argv[3]);
   metrics = tick(sentence);
-  if(j%10==0){
+  if(j%100==0){
     var sentence_soft_no_primer = predictSentence(model, true, sample_softmax_temperature);
     var sentence_soft_primer = predictSentence(model, true, sample_softmax_temperature, "Imagination ");
     var sentence_argmax_no_primer = predictSentence(model, false);

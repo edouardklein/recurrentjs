@@ -153,3 +153,9 @@ Starting with the code from Exp1, make the save/restore mechanisms work.
 Set up an experiment that runs for a large number of ticks, reading one sentence at a time from the book.
 
 Set up the experiments on the server : run three different sizes of network on three different sizes of input, for the same number of ticks. Compare the perplexity graphs, compare the predicted sentences.
+
+Mistakes on the experiment :
+- `strfile` should have been rerun on the .txt file, otherwise `fortune` works weirdly (the same chunks come over and over).
+- some utf8 chars (e.g. U+2014, EM DASH) do not play well with the terminal stuff over ssh, I converted everything to ASCII.
+
+Modified the Makefile, Exp2 also tries to learn a big-ish network (100 neurons) on the whole file.

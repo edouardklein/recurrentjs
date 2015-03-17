@@ -5,24 +5,29 @@
 
 with open('the-singularity-is-near_clean.txt') as f:
     text = f.read()
-text[:1000]
+#text
+text = text.encode('ascii','ignore').decode()
 
 # <codecell>
 
 #Removing consecutive end of lines
 import re
-def remove_conscutive_CR(text):
+def remove_consecutive_CR(text):
     return re.sub('\n+','\n', text)
-text = remove_conscutive_CR(text)
+text = remove_consecutive_CR(text)
 text[:1000]
 
 # <codecell>
 
 #Making the text a fortune file
-text2 = remove_conscutive_CR(re.sub('([^\.]*\.)',r'\1\n%\n', text))
+text2 = remove_consecutive_CR(re.sub('([^\.]*\.)',r'\1\n%\n', text))
 text2[:1000]
-with open('Kurzweil_1s.txt', 'w') as f:
-    f.write(text2)
+with open('Kurzweil_1s.txt', 'wb') as f:
+    f.write(text2.encode('ascii'))
+
+# <codecell>
+
+text2.encode('ascii','ignore')[:1000]
 
 # <codecell>
 
@@ -33,5 +38,9 @@ with open('Kurzweil_2s.txt', 'w') as f:
 
 # <codecell>
 
-''.join(set(text))
+''.join(set(text2))
+
+# <codecell>
+
+text2.encode('ascii','ignore')[:1000].decode()
 
