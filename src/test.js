@@ -343,7 +343,7 @@ reinit()
 //jsonModel = fs.readFileSync(process.argv[4]);
 //var j = JSON.parse(jsonModel);
 //loadModel(j);
-var max_ticks = 50001;
+var max_ticks = 100001;
 //for(var j=10001;j<max_ticks;j++){
 for(var j=1;j<max_ticks;j++){
   var sentence = execSync('fortune '+process.argv[3]);

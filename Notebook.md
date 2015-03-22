@@ -177,3 +177,25 @@ Running `make Exp2_big_inf` yelds good results. The network is trained on chunks
 
 
 We can now try to learn larger chunks. This would be Exp3
+
+# Experiment 3
+
+## Goal
+
+We now want to train on large chunks.
+
+## Methods
+
+We want to learn on larger chunks.
+
+Let's divide the book in paragraphs (using Python code in fortune.ipynb). Done.
+
+Let's create Exp3 in the Makefile. Done, target name: `Exp3_100_1p`
+
+I feel confident that a 100 neuron network will learn when fed chunks on length 1 paragraph. While we are at it, let's try feeding it 5 paragraphs at a time. Maybe it's too much and we will have to increase the network size. We'll see.
+
+So I divide the book in chunks of 5 paragraphs. Done.
+
+I will increase the number of ticks, as well. Let's go to 100000 by modifying src/test.js.
+
+I create the target `Exp3_100_5p` in the Makefile.
