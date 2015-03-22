@@ -20,5 +20,5 @@ Exp2_small_inf: src/test.js Kurzweil_1s.txt Kurzweil_1s.dat src/recurrent.js
 
 Exp2_big_inf: src/test.js Kurzweil_1s.txt Kurzweil_1s.dat src/recurrent.js
 	strfile Kurzweil_1s.txt
-	node src/test 100 Kurzweil_1s.txt | tee log_big_1s.txt #First arg : number of neurons in the hidden layer, secodn arg : input fortune file.
+	node src/test 100 Kurzweil_1s.txt  Kurzweil_1s.txt_100_10000.json| tee log_big_1s.txt #First arg : number of neurons in the hidden layer, secodn arg : input fortune file.
 	grep metrics log_big_1s.txt  | sed s/metrics:// > metrics_big_1s.csv

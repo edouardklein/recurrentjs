@@ -339,8 +339,13 @@ var gradCheck = function() {
 var execSync = require('exec-sync');
 
 reinit()
-var max_ticks = 10001;
-for(var j=0;j<max_ticks;j++){
+//Uncomment the following line to start were the training left off // FIXME clean this
+//jsonModel = fs.readFileSync(process.argv[4]);
+//var j = JSON.parse(jsonModel);
+//loadModel(j);
+var max_ticks = 50001;
+//for(var j=10001;j<max_ticks;j++){
+for(var j=1;j<max_ticks;j++){
   var sentence = execSync('fortune '+process.argv[3]);
   metrics = tick(sentence);
   if(j%100==0){

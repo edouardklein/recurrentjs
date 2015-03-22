@@ -3,7 +3,7 @@ fs = require('fs')
 
 // prediction params
 var sample_softmax_temperature = 1.0; // how peaky model predictions should be
-var max_chars_gen = 100; // max length of generated sentences
+var max_chars_gen = 500; // max length of generated sentences
 
 // model parameters
 generator = 'lstm'; // can be 'rnn' or 'lstm'
@@ -109,13 +109,13 @@ jsonModel = fs.readFileSync(process.argv[2]);
 var j = JSON.parse(jsonModel);
 loadModel(j);
 var sentence_soft_no_primer = predictSentence(model, true, sample_softmax_temperature);
-var sentence_soft_primer = predictSentence(model, true, sample_softmax_temperature, "Imagination ");
-var sentence_argmax_no_primer = predictSentence(model, false);
-var sentence_argmax_primer = predictSentence(model, false, '', "Imagination ");
+//var sentence_soft_primer = predictSentence(model, true, sample_softmax_temperature, "Imagination ");
+//var sentence_argmax_no_primer = predictSentence(model, false);
+//var sentence_argmax_primer = predictSentence(model, false, '', "Imagination ");
 console.log(sentence_soft_no_primer)
-console.log(sentence_soft_primer)
-console.log(sentence_argmax_no_primer)
-console.log(sentence_argmax_primer)
+//console.log(sentence_soft_primer)
+//console.log(sentence_argmax_no_primer)
+//console.log(sentence_argmax_primer)
 //repl;
 //var iid = null;
 // $(function() {
