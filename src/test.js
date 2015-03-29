@@ -169,12 +169,17 @@ var predictSentence = function(model, samplei, temperature, primer) {
   var G = new R.Graph(false);
   var s = primer;
   var prev = {};
-  while(true) {
+  var i = 0;
+  console.log('Before loop');
+  while(i < max_chars_gen) {
+	i += 1;
 
+  console.log('CP1');
     // RNN tick
     var ix = s.length === 0 ? 0 : letterToIndex[s[s.length-1]];
     var lh = forwardIndex(G, model, ix, prev);
     prev = lh;
+  console.log('CP2');
 
     // sample predicted letter
     logprobs = lh.o;
@@ -188,19 +193,24 @@ var predictSentence = function(model, samplei, temperature, primer) {
       }
     }
 
+  console.log('CP3');
     probs = R.softmax(logprobs);
+console.log('CP3.5')
     if(samplei) {
+console.log('CP3.5 true');
       var ix = R.samplei(probs.w);
     } else {
+console.log('CP3.5 else');
       var ix = R.maxi(probs.w);
     }
 
+  console.log('CP4');
     if(ix === 0) break; // END token predicted, break out
-    if(s.length > max_chars_gen) { break; } // something is wrong
 
     var letter = indexToLetter[ix];
     s += letter;
   }
+console.log('After loop');
   return s;
 }
 
@@ -347,20 +357,22 @@ var max_ticks = 100001;
 //for(var j=10001;j<max_ticks;j++){
 for(var j=1;j<max_ticks;j++){
   var sentence = execSync('fortune '+process.argv[3]);
+    console.log('Sentence '+j+' whose length is '+sentence.length)
   metrics = tick(sentence);
-  if(j%100==0){
+console.log('time:'+sentence.length+', '+metrics.time)
+  //if(j%100==0){
     var sentence_soft_no_primer = predictSentence(model, true, sample_softmax_temperature);
-    var sentence_soft_primer = predictSentence(model, true, sample_softmax_temperature, "Imagination ");
-    var sentence_argmax_no_primer = predictSentence(model, false);
-    var sentence_argmax_primer = predictSentence(model, false, '', "Imagination ");
-    console.log('Sentence '+j)
+    //var sentence_soft_primer = predictSentence(model, true, sample_softmax_temperature, "Imagination ");
+    //var sentence_argmax_no_primer = predictSentence(model, false);
+    //var sentence_argmax_primer = predictSentence(model, false, '', "Imagination ");
     console.log(metrics)
     console.log(sentence_soft_no_primer)
-    console.log(sentence_soft_primer)
-    console.log(sentence_argmax_no_primer)
-    console.log(sentence_argmax_primer)
-    console.log('metrics:'+[j, metrics.ppl, metrics.ppl_on_unknown, metrics.cost, metrics.cost_on_unknown].join(','))
-    console.log('')
+    //console.log(sentence_soft_primer)
+    //console.log(sentence_argmax_no_primer)
+    //console.log(sentence_argmax_primer)
+    console.log('metrics:'+[j, metrics.ppl, metrics.ppl_on_unknown, metrics.cost, metrics.cost_on_unknown].join(','));
+    console.log('');
+if(j%100==0){
     saveModel(process.argv[3]+'_'+hidden_sizes[0]+'_'+j+'.json')
   }
 }

@@ -495,6 +495,11 @@ Math.log2 = require('es5-ext/math/log2');
   var samplei = function(w) {
     // sample argmax from w, assuming w are 
     // probabilities that sum to one
+    var debug_total = 0.;
+for(var i=0; i<w.length;i++){
+debug_total += w[i];
+}
+console.log('Samplei DBG : '+debug_total);
     var r = randf(0,1);
     var x = 0.0;
     var i = 0;
