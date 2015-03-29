@@ -358,21 +358,21 @@ var max_ticks = 100001;
 for(var j=1;j<max_ticks;j++){
   var sentence = execSync('fortune '+process.argv[3]);
     console.log('Sentence '+j+' whose length is '+sentence.length)
-  metrics = tick(sentence);
-console.log('time:'+sentence.length+', '+metrics.time)
-  //if(j%100==0){
-    var sentence_soft_no_primer = predictSentence(model, true, sample_softmax_temperature);
+    metrics = tick(sentence);
+    console.log('time:'+sentence.length+', '+metrics.time)
+  if(j%100==0){
+    //var sentence_soft_no_primer = predictSentence(model, true, sample_softmax_temperature);
     //var sentence_soft_primer = predictSentence(model, true, sample_softmax_temperature, "Imagination ");
     //var sentence_argmax_no_primer = predictSentence(model, false);
     //var sentence_argmax_primer = predictSentence(model, false, '', "Imagination ");
     console.log(metrics)
-    console.log(sentence_soft_no_primer)
+    //console.log(sentence_soft_no_primer)
     //console.log(sentence_soft_primer)
     //console.log(sentence_argmax_no_primer)
     //console.log(sentence_argmax_primer)
     console.log('metrics:'+[j, metrics.ppl, metrics.ppl_on_unknown, metrics.cost, metrics.cost_on_unknown].join(','));
     console.log('');
-if(j%100==0){
+//if(j%100==0){
     saveModel(process.argv[3]+'_'+hidden_sizes[0]+'_'+j+'.json')
   }
 }
