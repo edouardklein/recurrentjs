@@ -199,3 +199,24 @@ So I divide the book in chunks of 5 paragraphs. Done.
 I will increase the number of ticks, as well. Let's go to 100000 by modifying src/test.js.
 
 I create the target `Exp3_100_5p` in the Makefile.
+
+The experiments are launched. Ticks are way longer than with smaller chunks (this is expected). I also, by running `fortune Kurzweil_5p.txt` saw that sometimes a number is appended at the end of a sentence. Maybe it's the page number that messes up in txt format. A Regexp cleaning could get rid of that. We'll keep in mind that the output of the netwok, if it has some quirkiness to it, should be compared to the output of fortune...
+
+The code for Exp3 hanged, because of an infinite loop in samplei(), because of a NaN value somewhere
+
+I removed the call to predictSentence() (which was in turn calling samplei()) hoping that the training would go on. Sadly it does not. After more than 60 000 ticks, the system outputs garbage.
+
+I'll try to debug the code.
+
+The first step is to reproduce the bug. I undid the modifs I made that allowed for the code to run despite the bug. The code hangs after some chunks. I'll try to make it less random by not using fortune to select the chunks. The chunks will be hardcoded instead.
+
+I do this work in bug.js, which starts as a copy of test.js.
+
+By the way I notice that removing some special characters from the text (such as '-') concatenates words (e.g. constrasta instead of 'constrast - a'...). FIXME this.
+
+I remarked while chasing the bug for the first time that long sentences seem to trigger it.
+
+
+One way to do it may be to use strict mode, I hope
+
+https://stackoverflow.com/questions/9031888/any-way-to-force-strict-mode-in-node
