@@ -29,6 +29,13 @@ var solver = new R.Solver(); // should be class because it needs memory for step
 
 var model = {};
 
+var checkNaN = function(a){
+  for(var i=0;i<a.length;i++){
+    if(isNaN(a[i])){return true;}
+  }
+  return false;
+}
+
 //var inputData = fs.readFileSync('./pratchett10.txt', 'utf8');
 
 var initVocab = function(txt, count_threshold) {
@@ -228,12 +235,25 @@ var costfun = function(model, sent) {
     var ix_source = i === -1 ? 0 : letterToIndex[sent[i]]; // first step: start with START token
     var ix_target = i === n-1 ? 0 : letterToIndex[sent[i+1]]; // last step: end with END token
 
+    if(isNaN(ix_source)){"THE PROBLEM IS HERE (ix_source)"}
+    if(isNaN(ix_target)){"THE PROBLEM IS HERE (ix_source)"}
+
+
+    //console.log("costfun CP 1")
     lh = forwardIndex(G, model, ix_source, prev);
+    //console.log("costfun CP 2")
     prev = lh;
 
     // set gradients into logprobabilities
     logprobs = lh.o; // interpret output as logprobs
+    if(checkNaN(logprobs.w)){
+      console.log('Costfun sanity check on iteration '+i+', logprobs is NaN-ed')
+    }
     probs = R.softmax(logprobs); // compute the softmax probabilities
+    if(checkNaN(probs.w)){
+      console.log('Costfun sanity check on iteration '+i+', probs is NaN-ed')
+    }
+
 
     log2ppl += -Math.log2(probs.w[ix_target]); // accumulate base 2 log prob and do smoothing
     cost += -Math.log(probs.w[ix_target]);
@@ -242,6 +262,7 @@ var costfun = function(model, sent) {
     logprobs.dw = probs.w;
     logprobs.dw[ix_target] -= 1
   }
+  console.log("costfun CP 3")
   var ppl = Math.pow(2, log2ppl / (n - 1));
   return {'G':G, 'ppl':ppl, 'cost':cost};
 }
@@ -264,12 +285,16 @@ var tick = function(sent) {
   var t0 = +new Date();  // log start timestamp
 
   // evaluate cost function on a sentence
+  console.log("Tick CP -1")
   var cost_struct = costfun(model, sent);
 
   // use built up graph to compute backprop (set .dw fields in mats)
+  console.log("Tick CP 0")
   cost_struct.G.backward();
   // perform param update
+  console.log("Tick CP 1")
   var solver_stats = solver.step(model, learning_rate, regc, clipval);
+  console.log("Tick CP 2")
   //$("#gradclip").text('grad clipped ratio: ' + solver_stats.ratio_clipped)
 
   var t1 = +new Date();

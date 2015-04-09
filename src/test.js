@@ -360,8 +360,8 @@ for(var j=1;j<max_ticks;j++){
     console.log('Sentence '+j+' whose length is '+sentence.length)
     metrics = tick(sentence);
     console.log('time:'+sentence.length+', '+metrics.time)
-  if(j%100==0){
-    //var sentence_soft_no_primer = predictSentence(model, true, sample_softmax_temperature);
+    //if(j%100==0){
+    var sentence_soft_no_primer = predictSentence(model, true, sample_softmax_temperature);
     //var sentence_soft_primer = predictSentence(model, true, sample_softmax_temperature, "Imagination ");
     //var sentence_argmax_no_primer = predictSentence(model, false);
     //var sentence_argmax_primer = predictSentence(model, false, '', "Imagination ");
@@ -374,7 +374,7 @@ for(var j=1;j<max_ticks;j++){
     console.log('');
 //if(j%100==0){
     saveModel(process.argv[3]+'_'+hidden_sizes[0]+'_'+j+'.json')
-  }
+  //}
 }
 //repl;
 //var iid = null;

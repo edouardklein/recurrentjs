@@ -216,6 +216,39 @@ By the way I notice that removing some special characters from the text (such as
 
 I remarked while chasing the bug for the first time that long sentences seem to trigger it.
 
+In commit [master 2351119], the bug appears when running src/bug.js at sentence 3.
+
+I reran it a few times, the bug always appear at sentence 3, this indicates that the (I suppose random) initialization of the network has little to no impact on the bug.
+
+I run the tick() function on just sentence 3, to see if the bug is caused by the contents of sentence 3 or by the training, using all 3 sentences one after the other.
+
+I removed sentence 1 and 2 : the code runs at sentences 3 and 4, but fails (tested a few times) at 5.
+
+Added sentence 2 back : fails at 4.
+
+Added sentence 1 back, but removed 2 again (the sequence is 1 3 4...) : fail at 4.
+
+It seems to fail at the third message, whatever the message. Strange. I have a hunch the failure may be triggered after a certain amount of data has gone through the network.
+
+I will not act on this hunch now, time to dive in the code instead.
+
+The bug is that the sum of the argument w to samplei is NaN.
+
+Are all the values of w NaN or only one ? The 86 values of w are NaN. (There are 85 ≠ chars plus the end-of-string char).
+
+So, where dos w comes from ? It was returned from R.softmax.
+
+Does the input of R.softmaw has any NaNs in it ?
+Yes, all 86 values of m.w are NaNs, long before softmax is called by predictSentence.
+
+So, where does the first call to softmax with NaN arguments comes from ? It is somewhere in costfun.
+Nans begin to appear sometime during the loop in costfun(). softmax is not the culprit, the first NaN appears in its argument, which was constructed by forwardIndex().
+It's in line
+var output = G.add(G.mul(model['Whd'], hidden[hidden.length - 1]),model['bd']);
+visual inspection reveals no NaNs in model, let's check hidden
+
+There are NaNs in some indices of hidden.
+
 
 One way to do it may be to use strict mode, I hope
 

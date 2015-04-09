@@ -1,4 +1,11 @@
 var R = {}; // the Recurrent library
+
+var checkNaN = function(a){
+  for(var i=0;i<a.length;i++){
+    if(isNaN(a[i])){return true;}
+  }
+  return false;
+}
 Math.tanh = require('es5-ext/math/tanh');
 Math.log2 = require('es5-ext/math/log2');
 (function(global) {
@@ -20,9 +27,9 @@ Math.log2 = require('es5-ext/math/log2');
   var return_v = false;
   var v_val = 0.0;
   var gaussRandom = function() {
-    if(return_v) { 
+    if(return_v) {
       return_v = false;
-      return v_val; 
+      return v_val;
     }
     var u = 2*Math.random()-1;
     var v = 2*Math.random()-1;
@@ -60,7 +67,7 @@ Math.log2 = require('es5-ext/math/log2');
     this.dw = zeros(n * d);
   }
   Mat.prototype = {
-    get: function(row, col) { 
+    get: function(row, col) {
       // slow but careful accessor function
       // we want row-major order
       var ix = (this.d * row) + col;
@@ -71,7 +78,7 @@ Math.log2 = require('es5-ext/math/log2');
       // slow but careful accessor function
       var ix = (this.d * row) + col;
       assert(ix >= 0 && ix < this.w.length);
-      this.w[ix] = v; 
+      this.w[ix] = v;
     },
     toJSON: function() {
       var json = {};
@@ -136,11 +143,22 @@ Math.log2 = require('es5-ext/math/log2');
       return out;
     },
     tanh: function(m) {
+      if(checkNaN(m.w)){
+        console.log('tanh sanity check 1, input is NaN-ed');
+        console.log(m.w);
+        exit(1)
+      }
       // tanh nonlinearity
       var out = new Mat(m.n, m.d);
       var n = m.w.length;
-      for(var i=0;i<n;i++) { 
+      for(var i=0;i<n;i++) {
         out.w[i] = Math.tanh(m.w[i]);
+        if(isNaN(out.w[i])){
+          console.log('tanh sanity check 3, Caught in the act');
+          console.log(m.w[i]);
+          console.log(Math.tanh(m.w[i]))
+          exit(1)
+        }
       }
 
       if(this.needs_backprop) {
@@ -153,13 +171,18 @@ Math.log2 = require('es5-ext/math/log2');
         }
         this.backprop.push(backward);
       }
+      if(checkNaN(out.w)){
+        console.log('tanh sanity check 2, output is NaN-ed');
+        console.log(out.w);
+        exit(1)
+      }
       return out;
     },
     sigmoid: function(m) {
       // sigmoid nonlinearity
       var out = new Mat(m.n, m.d);
       var n = m.w.length;
-      for(var i=0;i<n;i++) { 
+      for(var i=0;i<n;i++) {
         out.w[i] = sig(m.w[i]);
       }
 
@@ -178,7 +201,7 @@ Math.log2 = require('es5-ext/math/log2');
     relu: function(m) {
       var out = new Mat(m.n, m.d);
       var n = m.w.length;
-      for(var i=0;i<n;i++) { 
+      for(var i=0;i<n;i++) {
         out.w[i] = Math.max(0, m.w[i]); // relu
       }
       if(this.needs_backprop) {
@@ -243,6 +266,16 @@ Math.log2 = require('es5-ext/math/log2');
       return out;
     },
     eltmul: function(m1, m2) {
+      if(checkNaN(m1.w)){
+        console.log('eltmul sanity check 1, m1 is NaN-ed');
+        console.log(hidden_d);
+        exit(1)
+      }
+      if(checkNaN(m2.w)){
+        console.log('eltmul sanity check 2, m2 is NaN-ed');
+        console.log(hidden_d);
+        exit(1);
+      }
       assert(m1.w.length === m2.w.length);
 
       var out = new Mat(m1.n, m1.d);
@@ -263,12 +296,15 @@ Math.log2 = require('es5-ext/math/log2');
   }
 
   var softmax = function(m) {
+    for(var i=0; i<m.w.length;i++){
+      if(isNaN(m.w[i])){console.log('Index '+i+' of m.w is NaN')}
+    }
       var out = new Mat(m.n, m.d); // probability volume
       var maxval = -999999;
       for(var i=0,n=m.w.length;i<n;i++) { if(m.w[i] > maxval) maxval = m.w[i]; }
 
       var s = 0.0;
-      for(var i=0,n=m.w.length;i<n;i++) { 
+      for(var i=0,n=m.w.length;i<n;i++) {
         out.w[i] = Math.exp(m.w[i] - maxval);
         s += out.w[i];
       }
@@ -333,17 +369,17 @@ Math.log2 = require('es5-ext/math/log2');
       var hidden_size = hidden_sizes[d];
 
       // gates parameters
-      model['Wix'+d] = new RandMat(hidden_size, prev_size , 0, 0.08);  
+      model['Wix'+d] = new RandMat(hidden_size, prev_size , 0, 0.08);
       model['Wih'+d] = new RandMat(hidden_size, hidden_size , 0, 0.08);
       model['bi'+d] = new Mat(hidden_size, 1);
-      model['Wfx'+d] = new RandMat(hidden_size, prev_size , 0, 0.08);  
+      model['Wfx'+d] = new RandMat(hidden_size, prev_size , 0, 0.08);
       model['Wfh'+d] = new RandMat(hidden_size, hidden_size , 0, 0.08);
       model['bf'+d] = new Mat(hidden_size, 1);
-      model['Wox'+d] = new RandMat(hidden_size, prev_size , 0, 0.08);  
+      model['Wox'+d] = new RandMat(hidden_size, prev_size , 0, 0.08);
       model['Woh'+d] = new RandMat(hidden_size, hidden_size , 0, 0.08);
       model['bo'+d] = new Mat(hidden_size, 1);
       // cell write params
-      model['Wcx'+d] = new RandMat(hidden_size, prev_size , 0, 0.08);  
+      model['Wcx'+d] = new RandMat(hidden_size, prev_size , 0, 0.08);
       model['Wch'+d] = new RandMat(hidden_size, hidden_size , 0, 0.08);
       model['bc'+d] = new Mat(hidden_size, 1);
     }
@@ -365,8 +401,8 @@ Math.log2 = require('es5-ext/math/log2');
       var hidden_prevs = [];
       var cell_prevs = [];
       for(var d=0;d<hidden_sizes.length;d++) {
-        hidden_prevs.push(new R.Mat(hidden_sizes[d],1)); 
-        cell_prevs.push(new R.Mat(hidden_sizes[d],1)); 
+        hidden_prevs.push(new R.Mat(hidden_sizes[d],1));
+        cell_prevs.push(new R.Mat(hidden_sizes[d],1));
       }
     } else {
       var hidden_prevs = prev.h;
@@ -407,14 +443,27 @@ Math.log2 = require('es5-ext/math/log2');
       var cell_d = G.add(retain_cell, write_cell); // new cell contents
 
       // compute hidden state as gated, saturated cell activations
-      var hidden_d = G.eltmul(output_gate, G.tanh(cell_d));
 
+      var hidden_d = G.eltmul(output_gate, G.tanh(cell_d));
+      if(checkNaN(hidden_d.w)){
+        console.log('ForwardIndex sanity check 1, hidden is NaN-ed');
+        console.log(hidden_d);
+        exit(1);
+      }
       hidden.push(hidden_d);
       cell.push(cell_d);
     }
 
     // one decoder to outputs at end
     var output = G.add(G.mul(model['Whd'], hidden[hidden.length - 1]),model['bd']);
+    if(checkNaN(output.w)){
+      console.log('ForwardIndex sanity check, output is NaN-ed');
+      //console.log(model)
+      console.log(hidden);
+      exit(1)
+    }//else{
+    //  console.log('ForwardIndex : output is clean.')
+    //}
 
     // return cell memory, hidden representation and output
     return {'h':hidden, 'c':cell, 'o' : output};
@@ -447,7 +496,7 @@ Math.log2 = require('es5-ext/math/log2');
     if(typeof prev.h === 'undefined') {
       var hidden_prevs = [];
       for(var d=0;d<hidden_sizes.length;d++) {
-        hidden_prevs.push(new R.Mat(hidden_sizes[d],1)); 
+        hidden_prevs.push(new R.Mat(hidden_sizes[d],1));
       }
     } else {
       var hidden_prevs = prev.h;
@@ -493,10 +542,11 @@ Math.log2 = require('es5-ext/math/log2');
   }
 
   var samplei = function(w) {
-    // sample argmax from w, assuming w are 
+    // sample argmax from w, assuming w are
     // probabilities that sum to one
     var debug_total = 0.;
 for(var i=0; i<w.length;i++){
+  if(isNaN(w[i])){console.log('Index '+i+' of w is NaN')}
 debug_total += w[i];
 }
 console.log('Samplei DBG : '+debug_total);
