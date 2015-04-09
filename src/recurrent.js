@@ -143,22 +143,11 @@ Math.log2 = require('es5-ext/math/log2');
       return out;
     },
     tanh: function(m) {
-      if(checkNaN(m.w)){
-        console.log('tanh sanity check 1, input is NaN-ed');
-        console.log(m.w);
-        exit(1)
-      }
       // tanh nonlinearity
       var out = new Mat(m.n, m.d);
       var n = m.w.length;
       for(var i=0;i<n;i++) {
         out.w[i] = Math.tanh(m.w[i]);
-        if(isNaN(out.w[i])){
-          console.log('tanh sanity check 3, Caught in the act');
-          console.log(m.w[i]);
-          console.log(Math.tanh(m.w[i]))
-          exit(1)
-        }
       }
 
       if(this.needs_backprop) {
@@ -170,11 +159,6 @@ Math.log2 = require('es5-ext/math/log2');
           }
         }
         this.backprop.push(backward);
-      }
-      if(checkNaN(out.w)){
-        console.log('tanh sanity check 2, output is NaN-ed');
-        console.log(out.w);
-        exit(1)
       }
       return out;
     },
@@ -266,16 +250,6 @@ Math.log2 = require('es5-ext/math/log2');
       return out;
     },
     eltmul: function(m1, m2) {
-      if(checkNaN(m1.w)){
-        console.log('eltmul sanity check 1, m1 is NaN-ed');
-        console.log(hidden_d);
-        exit(1)
-      }
-      if(checkNaN(m2.w)){
-        console.log('eltmul sanity check 2, m2 is NaN-ed');
-        console.log(hidden_d);
-        exit(1);
-      }
       assert(m1.w.length === m2.w.length);
 
       var out = new Mat(m1.n, m1.d);
@@ -296,9 +270,6 @@ Math.log2 = require('es5-ext/math/log2');
   }
 
   var softmax = function(m) {
-    for(var i=0; i<m.w.length;i++){
-      if(isNaN(m.w[i])){console.log('Index '+i+' of m.w is NaN')}
-    }
       var out = new Mat(m.n, m.d); // probability volume
       var maxval = -999999;
       for(var i=0,n=m.w.length;i<n;i++) { if(m.w[i] > maxval) maxval = m.w[i]; }
@@ -445,25 +416,12 @@ Math.log2 = require('es5-ext/math/log2');
       // compute hidden state as gated, saturated cell activations
 
       var hidden_d = G.eltmul(output_gate, G.tanh(cell_d));
-      if(checkNaN(hidden_d.w)){
-        console.log('ForwardIndex sanity check 1, hidden is NaN-ed');
-        console.log(hidden_d);
-        exit(1);
-      }
       hidden.push(hidden_d);
       cell.push(cell_d);
     }
 
     // one decoder to outputs at end
     var output = G.add(G.mul(model['Whd'], hidden[hidden.length - 1]),model['bd']);
-    if(checkNaN(output.w)){
-      console.log('ForwardIndex sanity check, output is NaN-ed');
-      //console.log(model)
-      console.log(hidden);
-      exit(1)
-    }//else{
-    //  console.log('ForwardIndex : output is clean.')
-    //}
 
     // return cell memory, hidden representation and output
     return {'h':hidden, 'c':cell, 'o' : output};
@@ -544,12 +502,6 @@ Math.log2 = require('es5-ext/math/log2');
   var samplei = function(w) {
     // sample argmax from w, assuming w are
     // probabilities that sum to one
-    var debug_total = 0.;
-for(var i=0; i<w.length;i++){
-  if(isNaN(w[i])){console.log('Index '+i+' of w is NaN')}
-debug_total += w[i];
-}
-console.log('Samplei DBG : '+debug_total);
     var r = randf(0,1);
     var x = 0.0;
     var i = 0;

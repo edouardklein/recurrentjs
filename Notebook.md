@@ -249,7 +249,19 @@ visual inspection reveals no NaNs in model, let's check hidden
 
 There are NaNs in some indices of hidden.
 
+Going up a few lines, I check and there are NaNs in hidden_d. Let's check the arguments of eltmul()
 
+The second argument of eltmul is NaN-ed. This is the output of G.tanh()
+
+Let's check the arguments of G.tanh(). It's the output that becomes NaN.
+
+I've caught Math.tanh() in the act of returning NaN for an input of 709.9954609728775.
+
+Using src/test_tanh.js, it appears that tanh returns NaN for values absolutely higher than 709.8000000000928.
+
+I submitted a pull request upstream: https://github.com/medikoo/es5-ext/pull/28
+
+Now let's find a workaround in the meantime.
 One way to do it may be to use strict mode, I hope
 
 https://stackoverflow.com/questions/9031888/any-way-to-force-strict-mode-in-node
