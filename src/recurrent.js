@@ -507,6 +507,7 @@ Math.log2 = require('es5-ext/math/log2');
     var i = 0;
     while(true) {
       x += w[i];
+      assert(!(isNaN(x)), "NaN detected in samplei !")
       if(x > r) { return i; }
       i++;
     }
