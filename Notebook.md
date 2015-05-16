@@ -265,3 +265,75 @@ Now let's find a workaround in the meantime.
 One way to do it may be to use strict mode, I hope
 
 https://stackoverflow.com/questions/9031888/any-way-to-force-strict-mode-in-node
+
+
+# Perplexity bug
+
+When loading up a network state from a .json file, the perplexity is higher than what it used to be when the network's state was saved.
+
+- What exactly is the perplexity ?
+
+The input layer is the same size as the alphabet. One neuron per letter. Sentences are given to the network, one letter at a time.
+
+There is a hidden layer.
+
+On the output layer (which is the same size as the input layer) a letter is chose thanks to a probabilty distribution computed from the values of the neurons (c.f. Softmax function).
+
+The perplexity grows with the uniformity of the probabilty distribution.
+
+Let's say I want my network to output "This is an example sentence."
+
+I will feed it the START_SIGNAL. Then I look at the perplexity of the letter 'T'.
+
+Then I feed it the letter 'T', and I look at the perplexity of letter 'h'.
+
+And so on...
+
+The perplexity is the sum of -log(Prob of choosing the correct letter) for all letters of the target sentence.
+This value if low (log(1) == 0) if the prob is close to 1. It's higher if the probability is small (because -log(x) -> Inf when x->0).
+
+cf. train.js:256 /log2ppl/
+
+- On what sentence is the perplexity being computed ?
+
+At each tick, you give the network a new sentence to learn from. The perplexity is computed on the sentence the network just learned on.
+
+It's also computed on a sentence that do not appear in the dataset.
+
+train.js:303 /cost_struct_on_unknown/
+
+- Write a piece of code to reproduce the bug *quickly*.
+
+I try to learn a short sentence to speed up the execution.
+
+But when I load the network, I see no significant spike in perplexity. ??
+
+Let's try feeding a different sentence to the network at every tick.
+
+This time (I tried five times in a row), the perplexity when we load the network is indeed higher (but by a small amount) than when we saved it.
+
+
+- Why ?
+
+I suspect that some objects that have an interesting value when the code is run are not initialized wiht those values when we load a state, because those objects are not saved.
+
+- What are we saving actually ?
+
+We save the model and some global variables
+
+- What do we not save that may actually be useful ?
+
+I make it so one sentence is associated with one tick, and the network is fed the same sentence whether it executed from tick 0 to now, of just loaded from a file.
+
+I notice that the perplexity is higher on the tick after we load, not the tick at which we load.
+
+When we load, we call train(), which call tick(), which computes the perplexity from the model (which we just loaded) and the sentence (we made sure it is the same in both the execution from the beginning and the execution from the file). The perplexity is the same, because same input means same output.
+
+But then, in tick(), we reach a call to solver.step(). This object (solver) is not loaded from the file. Therefore the values in it are not the same in the two executions. Because this function (solver.step()) take model as an argument, it's probable it modifies it. From this point on, model is not the same in both execution paths.
+
+I propose to save the variable solver as well.
+
+This was not done in the original library. I do really hope it was just to save developper time, and not because for some reason solver is un-savable.
+
+
+I wrote the code for saving and and loading the solver object. Now both curves are the same. I believe the bug is solved.
