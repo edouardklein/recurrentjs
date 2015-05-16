@@ -146,6 +146,17 @@ var saveModel = function(filename) {
     }
   }
   out['model'] = model_out;
+  var solver_out = {};
+  solver_out['decay_rate'] = solver.decay_rate;
+  solver_out['smooth_eps'] = solver.smooth_eps;
+  step_cache_out = {};
+  for(var k in solver.step_cache) {
+    if(solver.step_cache.hasOwnProperty(k)) {
+      step_cache_out[k] = solver.step_cache[k].toJSON();
+    }
+  }
+  solver_out['step_cache'] = step_cache_out;
+  out['solver'] = solver_out;
   out['letterToIndex'] = letterToIndex;
   out['indexToLetter'] = indexToLetter;
   out['vocab'] = vocab;
@@ -164,6 +175,17 @@ var loadModel = function(j) {
       model[k] = new R.Mat(1,1);
       model[k].fromJSON(matjson);
     }
+  }
+  solver = new R.Solver(); // have to reinit the solver since model changed
+  solver.decay_rate = j.solver.decay_rate;
+  solver.smooth_eps = j.solver.smooth_eps;
+  solver.step_cache = {};
+  for(var k in j.solver.step_cache){
+      if(j.solver.step_cache.hasOwnProperty(k)){
+          var matjson = j.solver.step_cache[k];
+          solver.step_cache[k] = new R.Mat(1,1);
+          solver.step_cache[k].fromJSON(matjson);
+      }
   }
   letterToIndex = j['letterToIndex'];
   indexToLetter = j['indexToLetter'];
