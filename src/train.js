@@ -24,7 +24,7 @@ var fs = require('fs');
 var main_data_folder = process.argv[3];
 var networks_folder = 'networks';
 var save_every_tick = 5;
-var max_ticks = 0;
+var max_ticks = 20;
 var stopped = false;
 
 // prediction params
@@ -323,7 +323,7 @@ var getMostRecentFile = function(dir) {
 };
 
 var logToCSV = function(data) {
-  fs.appendFileSync(main_data_folder + '/log.csv', data + '\n');
+  fs.appendFileSync(main_data_folder + process.argv[4], data + '\n');
 };
 
 // var exitHandler = function() {
@@ -335,7 +335,8 @@ var logToCSV = function(data) {
 
 var train = function() {
 
-  var sentence = execSync('fortune ' + main_data_folder + '/text.txt');
+    //var sentence = execSync('fortune ' + main_data_folder + '/text.txt');
+    var sentence = "This is my example sentence."
   console.log('Sentence ' + tick_iter + ' whose length is ' + sentence.length);
   metrics = tick(sentence);
   console.log('sentence length / time: ' + sentence.length + ', ' + metrics.time);
@@ -367,9 +368,9 @@ var train = function() {
 reinit();
 
 // Load existing network
-if (typeof process.argv[4] !== 'undefined') {
-  var mostRecentNetwork = getMostRecentFile(main_data_folder + '/' + networks_folder);
-
+if (typeof process.argv[5] !== 'undefined') {
+  //var mostRecentNetwork = getMostRecentFile(main_data_folder + '/' + networks_folder);
+mostRecentNetwork = process.argv[5]
   if (mostRecentNetwork.indexOf('.json') > -1) {
 
     console.log("Loading network from disk: " + mostRecentNetwork);
@@ -381,4 +382,5 @@ if (typeof process.argv[4] !== 'undefined') {
 }
 
 // go go go
+logToCSV('iter,_,__,ppl,ppl_uk')
 train();
